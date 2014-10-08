@@ -60,6 +60,7 @@ local footPlacement = display.newRect( 70, display.contentHeight, 170, 200 )
 footPlacement.strokeWidth = 1
 footPlacement:setFillColor( 0,1,0 )
 
+--[[UI Background Code]] --
 local uiBGBG = display.newRect(display.contentCenterX, display.contentCenterY, 260,260)
 uiBGBG.strokeWidth = 1
 uiBGBG:setFillColor(0,0,1)
@@ -77,10 +78,23 @@ function showUIBG()
 	uiBG.isVisible = true
 	uiBGBG.isVisible = true
 end
+---------------------------
 
 local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 80, "Arial", 27 )
 highScoreInfo:setFillColor( 0,0,1 )
 highScoreInfo.isVisible = false
+
+local instructionsOptions = {
+	text = "INSTRUCTIONS\nTap the green square\n as many times as you can\n before the time runs out!",
+	x = display.contentWidth/2,
+	y = display.contentHeight/2 +25,
+	font = "Arial",
+	fontSize = 21,
+	align = "center"
+}
+local instructions = display.newText(instructionsOptions)
+instructions:setFillColor( 0,0,1 )
+instructions.isVisible = true
 
 local widget = require( "widget" )
 local inGame = false
@@ -101,32 +115,6 @@ function startGame()
 	ads.hide( )
 end
 
---[[
-function quitButtonPressed( event )
-    if ( "ended" == event.phase ) then
-
-    end
-end
-
--- Create the widget
-buttonQuit = widget.newButton
-{
-    label = "QUIT",
-    onEvent = quitButtonPressed,
-    emboss = false,
-    --properties for a rounded rectangle button...
-    shape="roundedRect",
-    width = 200,
-    height = 40,
-    cornerRadius = 2,
-    fillColor = { default={ 0, 0, 1, 1 }, over={ 0, 1, 0, 0.4 } },
-    strokeWidth = 4
-  
-}
-
-buttonQuit.x = display.contentCenterX
-buttonQuit.y = display.contentCenterY
-]]--
 
 function playButtonPressed( event )
     if ( "ended" == event.phase ) then
@@ -134,6 +122,7 @@ function playButtonPressed( event )
         timeLimit = 6
         distScore = 0
         buttonPlay.isVisible = false
+        instructions.isVisible = false
         buttonPlay:setEnabled( false )
         timer.performWithDelay( 500, startGame )
         highScoreInfo.isVisible = false
@@ -159,7 +148,7 @@ buttonPlay = widget.newButton
 }
 
 buttonPlay.x = display.contentCenterX
-buttonPlay.y = display.contentCenterY
+buttonPlay.y = display.contentCenterY-70
 
 
 function replayButtonPressed( event )
@@ -168,6 +157,7 @@ function replayButtonPressed( event )
         timeLimit = 6
         distScore = 0
         buttonReplay.isVisible = false
+        instructions.isVisible = false
         buttonReplay:setEnabled( false )
         timer.performWithDelay( 500, startGame )
         highScoreInfo.isVisible = false
