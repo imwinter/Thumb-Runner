@@ -50,6 +50,7 @@ ads.init( adProvider, appID, adListener )
 
 ads.show( "banner", { x=0, y=1000000, appID} )
 
+
 local centerLine = display.newLine( display.contentWidth/2, -40, display.contentWidth/2, display.contentHeight+40 )
 centerLine:setStrokeColor( 1, 0, 0, 1 )
 centerLine.strokeWidth = 8
@@ -59,7 +60,25 @@ local footPlacement = display.newRect( 70, display.contentHeight, 170, 200 )
 footPlacement.strokeWidth = 1
 footPlacement:setFillColor( 0,1,0 )
 
-local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 40, "Arial", 30 )
+local uiBGBG = display.newRect(display.contentCenterX, display.contentCenterY, 260,260)
+uiBGBG.strokeWidth = 1
+uiBGBG:setFillColor(0,0,1)
+
+local uiBG = display.newRect(display.contentCenterX, display.contentCenterY, 250,250)
+uiBG.strokeWidth = 1
+uiBG:setFillColor(1,1,1)
+
+function hideUIBG()
+	uiBG.isVisible = false
+	uiBGBG.isVisible = false
+end
+
+function showUIBG()
+	uiBG.isVisible = true
+	uiBGBG.isVisible = true
+end
+
+local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 80, "Arial", 30 )
 highScoreInfo:setFillColor( 0,0,1 )
 highScoreInfo.isVisible = false
 
@@ -80,11 +99,38 @@ timeLimit = 5
 function startGame()
 	inGame = true
 	ads.hide( )
-	print("IG True")
 end
+
+--[[
+function quitButtonPressed( event )
+    if ( "ended" == event.phase ) then
+
+    end
+end
+
+-- Create the widget
+buttonQuit = widget.newButton
+{
+    label = "QUIT",
+    onEvent = quitButtonPressed,
+    emboss = false,
+    --properties for a rounded rectangle button...
+    shape="roundedRect",
+    width = 200,
+    height = 40,
+    cornerRadius = 2,
+    fillColor = { default={ 0, 0, 1, 1 }, over={ 0, 1, 0, 0.4 } },
+    strokeWidth = 4
+  
+}
+
+buttonQuit.x = display.contentCenterX
+buttonQuit.y = display.contentCenterY
+]]--
 
 function playButtonPressed( event )
     if ( "ended" == event.phase ) then
+    	hideUIBG()
         timeLimit = 6
         distScore = 0
         buttonPlay.isVisible = false
@@ -98,12 +144,14 @@ end
 buttonPlay = widget.newButton
 {
     label = "PLAY",
+    labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 0, 0.5 } },
+    fontSize = 20,
     onEvent = playButtonPressed,
     emboss = false,
     --properties for a rounded rectangle button...
     shape="roundedRect",
     width = 200,
-    height = 40,
+    height = 60,
     cornerRadius = 2,
     fillColor = { default={ 0, 0, 1, 1 }, over={ 0, 1, 0, 0.4 } },
     strokeWidth = 4
@@ -111,11 +159,12 @@ buttonPlay = widget.newButton
 }
 
 buttonPlay.x = display.contentCenterX
-buttonPlay.y = display.contentCenterY - 70
+buttonPlay.y = display.contentCenterY
 
 
 function replayButtonPressed( event )
     if ( "ended" == event.phase ) then
+    	hideUIBG()
         timeLimit = 6
         distScore = 0
         buttonReplay.isVisible = false
@@ -129,12 +178,14 @@ end
 buttonReplay = widget.newButton
 {
     label = "REPLAY",
+    labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 0, 0.5 } },
+    fontSize = 20,
     onEvent = replayButtonPressed,
     emboss = false,
     --properties for a rounded rectangle button...
     shape="roundedRect",
     width = 200,
-    height = 40,
+    height = 60,
     cornerRadius = 2,
     fillColor = { default={ 0, 0, 1, 1 }, over={ 0, 1, 0, 0.4 } },
     strokeWidth = 4
@@ -156,7 +207,7 @@ distText:setFillColor(0,0,0)
 
 
 --[[Time Limit]]--
-timeLeft = display.newText(timeLimit, (display.contentWidth-display.contentWidth/4), -20, native.systemFontBold, 30)
+timeLeft = display.newText("Time Left: " .. timeLimit, (display.contentWidth-display.contentWidth/4), -20, native.systemFontBold, 25)
 timeLeft:setTextColor(255,0,0)
 
 
@@ -195,13 +246,13 @@ end
 --[[Timer Function]]--
 local function timerDown()
    timeLimit = timeLimit-1
-   timeLeft.text = timeLimit
+   timeLeft.text = "Time Left: " .. timeLimit
      if(timeLimit==0)then
      	timer.pause( gameTimer)
   		highScoreInfo.isVisible = true
         inGame = false
+        showUIBG()
 		ads.show( "banner", { x=0, y=1000000, appID} )
-        print("IG False")
         buttonReplay.isVisible = true
         buttonReplay:setEnabled(true)
         if(doesFileExist("highScore.txt",system.DocumentsDirectory)) then
