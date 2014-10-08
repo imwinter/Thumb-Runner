@@ -78,7 +78,7 @@ function showUIBG()
 	uiBGBG.isVisible = true
 end
 
-local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 80, "Arial", 30 )
+local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 80, "Arial", 27 )
 highScoreInfo:setFillColor( 0,0,1 )
 highScoreInfo.isVisible = false
 
@@ -199,15 +199,15 @@ buttonReplay:setEnabled( false )
 buttonReplay.isVisible = false
 
 
-local distTextTitle = display.newText( "Distance: ", display.contentWidth/4, -30, "Arial", 20)
-distTextTitle:setFillColor(0,0,0)
+--local distTextTitle = display.newText( "Distance: ", display.contentWidth/4, -30, "Arial", 20)
+--distTextTitle:setFillColor(0,0,0)
 
-local distText = display.newText( distScore, display.contentWidth/4, -10, "Arial", 20)
-distText:setFillColor(0,0,0)
+local distText = display.newText( "Distance: " .. distScore, display.contentWidth/4, -20, "Arial", 25)
+distText:setFillColor(1,0,0)
 
 
 --[[Time Limit]]--
-timeLeft = display.newText("Time Left: " .. timeLimit, (display.contentWidth-display.contentWidth/4), -20, native.systemFontBold, 25)
+timeLeft = display.newText("Time Left: " .. timeLimit, (display.contentWidth-display.contentWidth/4), -20, "Arial", 25)
 timeLeft:setTextColor(255,0,0)
 
 
@@ -223,8 +223,7 @@ function screenTap(event)
 				lastSideTapped = "Left"
 				distScore = distScore + 1
 				timer.resume(gameTimer)
-				print("TR Left")
-				distText.text = distScore
+				distText.text = "Distance: " .. distScore
 				footPlacement.x = display.contentWidth/2 + 90
 			end
 		else
@@ -232,8 +231,7 @@ function screenTap(event)
 				lastSideTapped = "Right"
 				distScore = distScore + 1
 				timer.resume(gameTimer)
-				print("TR Right")
-				distText.text = distScore
+				distText.text = "Distance: " .. distScore
 				footPlacement.x = 70
 			end
 		end
