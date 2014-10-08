@@ -51,9 +51,13 @@ ads.init( adProvider, appID, adListener )
 ads.show( "banner", { x=0, y=1000000, appID} )
 
 
-local centerLine = display.newLine( display.contentWidth/2, -40, display.contentWidth/2, display.contentHeight+40 )
-centerLine:setStrokeColor( 1, 0, 0, 1 )
+local centerLine = display.newLine( display.contentWidth/2, -50, display.contentWidth/2, display.contentHeight+50 )
+centerLine:setStrokeColor( 0, 0, 1, 1 )
 centerLine.strokeWidth = 8
+
+local topLine = display.newLine(0,0, display.contentWidth, 0)
+topLine:setStrokeColor( 0, 0, 1, 1 )
+topLine.strokeWidth = 8
 
 
 local footPlacement = display.newRect( 70, display.contentHeight, 170, 200 )
