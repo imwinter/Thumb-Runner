@@ -36,12 +36,9 @@ local function adListener( event )
 
     local msg = event.response
     -- Quick debug message regarding the response from the library
-    print( "Message from the ads library: ", msg )
 
     if ( event.isError ) then
         print( "Error, no ad received", msg )
-    else
-        print( "Ah ha! Got one!" )
     end
 end
 
@@ -51,7 +48,11 @@ ads.init( adProvider, appID, adListener )
 ads.show( "banner", { x=0, y=1000000, appID} )
 
 
-local centerLine = display.newLine( display.contentWidth/2, -50, display.contentWidth/2, display.contentHeight+50 )
+local titleText = display.newText("THUMB RACER", display.contentWidth/2, -22, "Arial", 35 )
+titleText:setFillColor( 0,0,1 )
+
+
+local centerLine = display.newLine( display.contentWidth/2, 0, display.contentWidth/2, display.contentHeight+50 )
 centerLine:setStrokeColor( 0, 0, 1, 1 )
 centerLine.strokeWidth = 8
 
@@ -84,9 +85,13 @@ function showUIBG()
 end
 ---------------------------
 
-local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 80, "Arial", 27 )
+local highScoreInfo = display.newText( "High Score: ", display.contentWidth/2, display.contentHeight/2 - 60, "Arial", 27 )
 highScoreInfo:setFillColor( 0,0,1 )
 highScoreInfo.isVisible = false
+
+local currentScoreInfo = display.newText( "Your Score:", display.contentWidth/2, display.contentHeight/2 - 100, "Arial", 27 )
+currentScoreInfo:setFillColor( 0,0,1 )
+currentScoreInfo.isVisible = false
 
 local instructionsOptions = {
 	text = "INSTRUCTIONS\nTap the green square\n as many times as you can\n before the time runs out!",
@@ -130,6 +135,7 @@ function playButtonPressed( event )
         buttonPlay:setEnabled( false )
         timer.performWithDelay( 500, startGame )
         highScoreInfo.isVisible = false
+        currentScoreInfo.isVisible = false
     end
 end
 
@@ -159,12 +165,14 @@ function replayButtonPressed( event )
     if ( "ended" == event.phase ) then
     	hideUIBG()
         timeLimit = 6
+        timeLeft.text = "6"
         distScore = 0
         buttonReplay.isVisible = false
         instructions.isVisible = false
         buttonReplay:setEnabled( false )
         timer.performWithDelay( 500, startGame )
         highScoreInfo.isVisible = false
+        currentScoreInfo.isVisible = false
     end
 end
 
@@ -196,13 +204,53 @@ buttonReplay.isVisible = false
 --local distTextTitle = display.newText( "Distance: ", display.contentWidth/4, -30, "Arial", 20)
 --distTextTitle:setFillColor(0,0,0)
 
-local distText = display.newText( "Distance: " .. distScore, display.contentWidth/4, -20, "Arial", 25)
-distText:setFillColor(1,0,0)
+local distOptions = {
+	text = "Distance",
+	x = display.contentWidth/4,
+	y = 40,
+	font = "Arial",
+	fontSize = 25,
+	align = "center"
+}
 
+local distText = display.newText( distOptions )
+distText:setFillColor(0,0,1)
+
+local distValueOptions = {
+	text = distScore,
+	x = display.contentWidth/4,
+	y = 83,
+	font = "Arial",
+	fontSize = 60,
+	align = "center"
+}
+
+local distValueText = display.newText( distValueOptions )
+distValueText:setFillColor(0,1,0)
 
 --[[Time Limit]]--
-timeLeft = display.newText("Time Left: " .. timeLimit, (display.contentWidth-display.contentWidth/4), -20, "Arial", 25)
-timeLeft:setTextColor(255,0,0)
+local timerTextOptions = {
+	text = "Time Left",
+	x = (display.contentWidth/4) * 3,
+	y = 40,
+	font = "Arial",
+	fontSize = 25,
+	align = "center"
+}
+local timerText = display.newText( timerTextOptions)
+timerText:setTextColor(0,0,1)
+
+
+local timeLeftOptions = {
+	text = "6",
+	x = (display.contentWidth/4) * 3,
+	y = 83,
+	font = "Arial",
+	fontSize = 60,
+	align = "center"
+}
+timeLeft = display.newText( timeLeftOptions )
+timeLeft:setTextColor(1,0,0)
 
 
 local lastSideTapped = nil
@@ -217,7 +265,7 @@ function screenTap(event)
 				lastSideTapped = "Left"
 				distScore = distScore + 1
 				timer.resume(gameTimer)
-				distText.text = "Distance: " .. distScore
+				distValueText.text = distScore
 				footPlacement.x = display.contentWidth/2 + 90
 			end
 		else
@@ -225,7 +273,7 @@ function screenTap(event)
 				lastSideTapped = "Right"
 				distScore = distScore + 1
 				timer.resume(gameTimer)
-				distText.text = "Distance: " .. distScore
+				distValueText.text = distScore
 				footPlacement.x = 70
 			end
 		end
@@ -238,7 +286,7 @@ end
 --[[Timer Function]]--
 local function timerDown()
    timeLimit = timeLimit-1
-   timeLeft.text = "Time Left: " .. timeLimit
+   timeLeft.text = timeLimit
      if(timeLimit==0)then
      	timer.pause( gameTimer)
   		highScoreInfo.isVisible = true
@@ -260,12 +308,12 @@ local function timerDown()
 				local file = io.open( path, "w" )
 				file:write( newHighScore )
 				highScoreInfo.text = "New High Score: " .. distScore
-				print("New High Score: " .. distScore)
 				io.close( file )
 				file = nil
 			else
+				currentScoreInfo.isVisible = true
+				currentScoreInfo.text = "Your Score: " .. distScore
 				highScoreInfo.text = "High Score: " .. highScore
-				print("Not as high as: " .. highScore)
 			end
 		else
 			local newHighScore = distScore
