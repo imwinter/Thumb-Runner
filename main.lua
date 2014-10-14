@@ -260,21 +260,23 @@ local lastSideTapped = nil
 --[[Screen Tap Event]]--
 function screenTap(event)
 	if (inGame == true) then
-		if (event.x < display.contentWidth/2) then
-			if(lastSideTapped == nil or lastSideTapped == "Right") then
-				lastSideTapped = "Left"
-				distScore = distScore + 1
-				timer.resume(gameTimer)
-				distValueText.text = distScore
-				footPlacement.x = display.contentWidth/2 + 90
-			end
-		else
-			if(lastSideTapped == nil or lastSideTapped == "Left") then
-				lastSideTapped = "Right"
-				distScore = distScore + 1
-				timer.resume(gameTimer)
-				distValueText.text = distScore
-				footPlacement.x = 70
+		if(event.phase == "began") then
+			if (event.x < display.contentWidth/2) then
+				if(lastSideTapped == nil or lastSideTapped == "Right") then
+					lastSideTapped = "Left"
+					distScore = distScore + 1
+					timer.resume(gameTimer)
+					distValueText.text = distScore
+					footPlacement.x = display.contentWidth/2 + 90
+				end
+			else
+				if(lastSideTapped == nil or lastSideTapped == "Left") then
+					lastSideTapped = "Right"
+					distScore = distScore + 1
+					timer.resume(gameTimer)
+					distValueText.text = distScore
+					footPlacement.x = 70
+				end
 			end
 		end
 	end
